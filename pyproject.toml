@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "wrtsapi"
+name = "wrts"
 version = "0.1.0"
 description = "A small lil library for using the WRTS API "
 authors = ["BadPythonCoder <no@no.no>"]

@@ -1,4 +1,4 @@
-from wrtsapi.Session import Session
+from wrts.Session import Session
 import json
 
 f = open("CREDS.txt")
