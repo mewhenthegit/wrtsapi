@@ -2,13 +2,29 @@ import json, requests
 
 class QuestionNotFound(Exception):
 	pass
-class AnswerNotFound(Exception):
-	pass
 
 class Answer:
-	def __init__(self, id, token):
-		pass
-
+	def __init__(self, obj, token):
+		self.token = token
+		self.body = obj["body"]
+		self.can_edit = obj["can_edit"]
+		self.can_flag = obj["can_flag"]
+		self.correct = obj["correct"]
+		self.id = obj["id"]
+		self.is_flagged = obj["is_flagged"]
+		self.is_own_answer = obj["is_own_answer"]
+		self.attachments = obj["qna_attachments"]
+		self.votes = obj["qna_vote_count"]
+		self.upvoted_by_self = obj["is_upvoted"]
+def vote(self):
+		result = requests.post(f"https://api.wrts.nl/api/v3/qna/answers/{self.id}/votes", headers={"x-auth-token": self.token}).text
+		print(result)
+		if self.upvoted_by_self:
+			self.votes -= 1
+			self.upvoted_by_self = False
+		else:
+			self.votes += 1
+			self.upvoted_by_self = True
 class Question:
 	def __init__(self, id, token):
 		def gen(answers, token):
