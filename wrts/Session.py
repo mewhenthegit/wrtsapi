@@ -13,7 +13,7 @@ class Session:
 		self._login(user, passwd)
 	def _login(self, user, passwd):
 		resp = requests.post("https://api.wrts.nl/api/v3/auth/get_token", json={"email": user, "password": passwd}).json()
-		print(resp)
+		#print(resp)
 		if not resp["success"]:
 			raise LoginFailure(resp["info"])
 		self.loggedin = True
@@ -28,3 +28,7 @@ class Session:
 		return gen(resp["results"], self.token)
 	def get_question(self, id):
 		return Question(id, self.token)
+	def post_question(self, contents, subject, attachments=[]):
+		data = {"contents": contents, "subject_id": subject, "qna_attachments_attributes": attachments}
+		resp = requests.post("https://api.wrts.nl/api/v3/public/qna/questions",json=json.dumps({"qna_question":data})).json()
+		return get_question(resp["id"])

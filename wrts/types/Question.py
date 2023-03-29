@@ -14,8 +14,8 @@ class Answer:
 		self.is_flagged = obj["is_flagged"]
 		self.is_own_answer = obj["is_own_answer"]
 		self.attachments = obj["qna_attachments"]
-		self.votes = obj["qna_vote_count"]
 		self.upvoted_by_self = obj["is_upvoted"]
+		
 def vote(self):
 		result = requests.post(f"https://api.wrts.nl/api/v3/qna/answers/{self.id}/votes", headers={"x-auth-token": self.token}).text
 		print(result)
@@ -29,7 +29,7 @@ class Question:
 	def __init__(self, id, token):
 		def gen(answers, token):
 			for answer in answers:
-				yield Answer(id, token)
+				yield Answer(answer, token)
 		obj = requests.get(f"https://api.wrts.nl/api/v3/public/qna/questions/{id}", headers={"x-auth-token":token}).json()
 		#print(obj)
 		if obj["qna_question"] == None:
