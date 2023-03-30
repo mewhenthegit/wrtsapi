@@ -1,3 +1,4 @@
+from .Subject import *
 import json, requests
 
 class QuestionNotFound(Exception):
@@ -15,10 +16,9 @@ class Answer:
 		self.is_own_answer = obj["is_own_answer"]
 		self.attachments = obj["qna_attachments"]
 		self.upvoted_by_self = obj["is_upvoted"]
-		
 def vote(self):
 		result = requests.post(f"https://api.wrts.nl/api/v3/qna/answers/{self.id}/votes", headers={"x-auth-token": self.token}).text
-		print(result)
+		#print(result)
 		if self.upvoted_by_self:
 			self.votes -= 1
 			self.upvoted_by_self = False
@@ -48,9 +48,19 @@ class Question:
 		self.attachments = obj["qna_attachments"] # do not forget to parse this later
 		self.moderated = obj["requires_forced_moderation"] # this is public?
 		self.title = obj["title"]
-		self.topic = obj["topic"] # should be converted
-		self.subject = obj["subject"] # this too
+		#self.subject = Subject(obj["subject"],token)
 		self.user = obj["user"] # same with this one
+		
+		subjects = requests.get("https://api.wrts.nl/api/v3/subjects",headers={"x-auth-token": token}).json()["subjects"]
+		for sub in subjects:
+			if sub["id"] == obj["subject"]["id"]:
+				self.subject = Subject(sub,token)
+				break
+		if not obj["topic"] == None:
+			for topic in self.subject.topics:
+				if topic.id == obj["topic"]["id"]:
+					self.topic = topic
+					break
 	def answer(self, body, attachments=[]):
 		resp = requests.post(f"https://api.wrts.nl/api/v3/public/questions/{id}/answers", json={"body": body, "qna_attachments": attachments}, headers={"x-auth-token":self.token}).json()
 		return Answer(resp["id"], self.token)

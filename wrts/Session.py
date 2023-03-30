@@ -1,7 +1,11 @@
 from .types.Question import Question
+from .types.Subject import Subject
 import requests, json
 
 class LoginFailure(Exception):
+	pass
+
+class QuestionFailure(Exception):
 	pass
 
 class Session:
@@ -9,12 +13,16 @@ class Session:
 	renew = 0
 	expiration = 0
 	token = ""
-	subjects = {}
-	def __init__(self, user, passwd, auto_gen_subjects=True):
+	subjects = None
+	def __init__(self, user, passwd):
 		self._login(user, passwd)
-		self.update_subjects()
-	def update_subjects(self):
-		resp = requests.get("https://api.wrts.nl/api/v3/subjects",headers={"x-auth-token": self.token})
+		self.subjects = self.give_subject_generator()
+	def give_subject_generator(self):
+		def generator(subjects, token):
+			for subject in subjects:
+				yield Subject(subject, token)
+		resp = requests.get("https://api.wrts.nl/api/v3/subjects",headers={"x-auth-token": self.token}).json()
+		return generator(resp["subjects"], self.token)
 	def _login(self, user, passwd):
 		resp = requests.post("https://api.wrts.nl/api/v3/auth/get_token", json={"email": user, "password": passwd}).json()
 		#print(resp)
@@ -32,7 +40,10 @@ class Session:
 		return gen(resp["results"], self.token)
 	def get_question(self, id):
 		return Question(id, self.token)
-	def post_question(self, contents, subject, attachments=[]):
-		data = {"contents": contents, "subject_id": subject, "qna_attachments_attributes": attachments}
-		resp = requests.post("https://api.wrts.nl/api/v3/public/qna/questions",headers={"x-auth-token": self.token},json=json.dumps({"qna_question":data})).json()
-		return get_question(resp["id"])
+	def post_question(self, contents, subject, topic=None, attachments=[]):
+		data = {"contents": contents, "subject_id": subject.id, "qna_attachments_attributes": attachments}
+		if not topic == None:  data["topic_id"] = topic.id
+		resp = requests.post("https://api.wrts.nl/api/v3/qna/questions",headers={"x-auth-token": self.token},json=json.dumps({"qna_question":data})).json()
+		if "success" in resp:
+			raise QuestionFailure(resp["error"])
+		return self.get_question(resp["qna_question"]["id"])
