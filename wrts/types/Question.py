@@ -1,4 +1,5 @@
 from .Subject import *
+from .User import *
 import json, requests
 
 class QuestionNotFound(Exception):
@@ -16,6 +17,7 @@ class Answer:
 		self.is_own_answer = obj["is_own_answer"]
 		self.attachments = obj["qna_attachments"]
 		self.upvoted_by_self = obj["is_upvoted"]
+		self.user = User(obj["user"]["username"])
 def vote(self):
 		result = requests.post(f"https://api.wrts.nl/api/v3/qna/answers/{self.id}/votes", headers={"x-auth-token": self.token}).text
 		#print(result)
@@ -49,8 +51,8 @@ class Question:
 		self.moderated = obj["requires_forced_moderation"] # this is public?
 		self.title = obj["title"]
 		#self.subject = Subject(obj["subject"],token)
-		self.user = obj["user"] # same with this one
-		
+		self.user = User(obj["user"]["username"],token) # same with this one
+
 		subjects = requests.get("https://api.wrts.nl/api/v3/subjects",headers={"x-auth-token": token}).json()["subjects"]
 		for sub in subjects:
 			if sub["id"] == obj["subject"]["id"]:
