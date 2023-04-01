@@ -17,5 +17,10 @@ def test_subjects():
 	print("Subject: "+q.subject.name)
 	sub = look4sub(s.subjects,"Frans")
 	topic = sub.topics[0]
+	total, notifs = s.get_notifs(1)
+	print(notifs)
+	print(f"There are {total} notifications!")
+	notif = next(notifs)
+	print(f"{notif.creator.first_name}: {notif.message}")
 	#print(s.post_question("Hoe leer je voor frans lol",sub,topic).title)
 	assert False
