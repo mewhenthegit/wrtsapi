@@ -17,8 +17,11 @@ def test_subjects():
 	print("Subject: "+q.subject.name)
 	sub = look4sub(s.subjects,"Frans")
 	topic = sub.topics[0]
+	label, count, questions = q.get_related_questions()
+	print(f"Similar questions to {label}: {count}")
+	sim = next(questions)
+	print(f"Example: {sim.title}")
 	total, notifs = s.get_notifs(1)
-	print(notifs)
 	print(f"There are {total} notifications!")
 	notif = next(notifs)
 	print(f"{notif.creator.first_name}: {notif.message}")

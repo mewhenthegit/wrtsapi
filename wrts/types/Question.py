@@ -18,7 +18,7 @@ class Answer:
 		self.attachments = obj["qna_attachments"]
 		self.upvoted_by_self = obj["is_upvoted"]
 		self.user = User(obj["user"]["username"])
-def vote(self):
+	def vote(self):
 		result = requests.post(f"https://api.wrts.nl/api/v3/qna/answers/{self.id}/votes", headers={"x-auth-token": self.token}).text
 		#print(result)
 		if self.upvoted_by_self:
@@ -64,5 +64,11 @@ class Question:
 					self.topic = topic
 					break
 	def answer(self, body, attachments=[]):
-		resp = requests.post(f"https://api.wrts.nl/api/v3/public/questions/{id}/answers", json={"body": body, "qna_attachments": attachments}, headers={"x-auth-token":self.token}).json()
+		resp = requests.post(f"https://api.wrts.nl/api/v3/qna/questions/{id}/answers", json={"body": body, "qna_attachments": attachments}, headers={"x-auth-token":self.token}).json()
 		return Answer(resp["id"], self.token)
+	def get_related_questions(self):
+		def gen_questions(objs, token):
+			for obj in objs:
+				yield Question(obj["id"],token)
+		resp = requests.get(f"https://api.wrts.nl/api/v3/public/qna/questions/{self.id}/related_questions", headers={"x-auth-token":self.token}).json()
+		return resp["label"], resp["total_count"], gen_questions(resp["qna_questions"],self.token)

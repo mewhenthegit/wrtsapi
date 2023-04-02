@@ -44,7 +44,7 @@ class Session:
 		def gen(questions, token):
 			for q in questions:
 				yield Question(q["id"],self.token)
-		return gen(resp["results"], self.token)
+		return resp["total_count"], gen(resp["results"], self.token)
 	def get_question(self, id):
 		return Question(id, self.token)
 	def post_question(self, contents, subject, topic=None, attachments=[]):
