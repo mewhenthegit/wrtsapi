@@ -65,3 +65,8 @@ class Question:
 	def get_related_questions(self):
 		resp = requests.get(f"https://api.wrts.nl/api/v3/public/qna/questions/{self.id}/related_questions", headers={"x-auth-token":self.session.token}).json()
 		return resp["label"], resp["total_count"], (Question(o["id"],self.session) for o in resp["qna_questions"])
+
+	def report(self, reason):
+		resp = requests.post("https://api.wrts.nl/api/v3/qna/flagged_questions", headers={"x-auth-token"}, json={"qna_question_id": self.id, "qna_question_flagging_reason": reason}).json
+		return resp
+
