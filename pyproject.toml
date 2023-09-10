@@ -10,8 +10,7 @@ python = "^3.7"
 requests = "^2.31.0"
 
 [tool.poetry.scripts]
-test = "examples:start"
-
+test = "example:start"
 
 [build-system]
 requires = ["poetry-core"]
