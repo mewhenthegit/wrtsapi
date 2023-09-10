@@ -11,17 +11,21 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     python-version: ["3.9", "3.10", "3.11"]
 
+    env:
+      USERNAME: ${{ secrets.PYPIUSERNAME }} # bad idea, but oh well
+      PASSWORD: ${{ secrets.PYPIPASSWD }}
+  
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python 3.11
       uses: actions/setup-python@v3
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.11
     - name: Install dependencies and build
       run: |
         python -m pip install poetry
@@ -29,4 +33,6 @@ jobs:
         python -m poetry build
     - name: Test if all worked
       run: |
-        echo "duck!"
+        python -m poetry publish --username=$USERNAME --password=$PASSWORD
+        echo "done!"
+        
