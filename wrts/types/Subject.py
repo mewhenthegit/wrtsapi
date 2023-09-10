@@ -18,20 +18,20 @@ class Topic:
 		self.unpublished_question_count = obj["unpublished_questions_count"] # THIS IS ALSO AVAILABLE?!?!?
 
 class Subject:
-	def __init__(self, obj, token):
+	def __init__(self, obj, session):
 		self.id = obj["id"]
 
 		self.fallback = obj["fallback"] # i wonder what this is
 		self.icon = obj["icon_url"]
-		self.locale = obj["locale"] # language or somethnig
-		self.logo = obj["logo"] # what is the point???
+		self.locale = obj["locale"]
+		self.logo = obj["logo"]
 		self.mutliple_methods = obj["multiple_methods"] # wtf is this supposed to mean?
 		self.name = obj["name"]
 		self.quick_answer = obj["quick_answer"] # what is the point? maybe its a priority thing (french has this turned out & french is a hard language)
 		self.selected_book = obj["selected_book"] # gotta do some more research on this
 
 		self.topics = []
-		response = requests.get(f"https://api.wrts.nl/api/v3/public/subjects/{self.id}/topics",headers={"x-auth-token": token}).json()["results"]
+		response = requests.get(f"https://api.wrts.nl/api/v3/public/subjects/{self.id}/topics",headers={"x-auth-token": session.token}).json()["results"]
 		for supercat in response:
 			for subcat in supercat["subcategories"]:
 				for topic in subcat["topics"]:

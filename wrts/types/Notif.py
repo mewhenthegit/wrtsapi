@@ -5,8 +5,8 @@ class NotifError(Exception):
 	pass
 
 class Notif:
-	def __init__(self, obj, token):
-		self.token = token
+	def __init__(self, obj, session):
+		self.session = session
 		self.id = obj["id"]
 		self.created_at = obj["created_at"]
 		self.icon = obj["icon"]
@@ -16,9 +16,9 @@ class Notif:
 		self.message = obj["message"]
 		self.read = obj["read"]
 		self.retrieved_at = obj["retrieved_at"] # aka read_at i think
-		self.creator = User(obj["creator"]["public_profile_name"],token)
+		self.creator = User(obj["creator"]["public_profile_name"],session)
 	def read(self):
-		resp = requests.patch(f"https://api.wrts.nl/api/v3/users/notifications/{self.id}",headers={"x-auth-token": self.token}).json()
+		resp = requests.patch(f"https://api.wrts.nl/api/v3/users/notifications/{self.id}",headers={"x-auth-token": self.session.token}).json()
 		if not resp["success"]:
 			raise NotifError(resp["error"]+" or something like that") # bro how does one even mess that up
 		return true

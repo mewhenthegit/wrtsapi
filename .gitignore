@@ -1,3 +1,2 @@
-CREDS.txt
-publish.sh
-
+examples/creds.json
+examples/.TOKEN
