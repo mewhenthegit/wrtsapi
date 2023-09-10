@@ -1,6 +1,8 @@
 from .types.Question import Question
 from .types.Subject import Subject
 from .types.Notif import Notif
+from .types.User import User
+from .types.List import List # too much troll
 from pathlib import Path
 import requests, json, platform
 
@@ -58,3 +60,7 @@ class Session:
 		if "success" in resp:
 			raise QuestionFailure(resp["error"])
 		return self.get_question(resp["qna_question"]["id"])
+
+	def get_self(self): # return user
+		resp = requests.get("https://api.wrts.nl/api/v3/get_user_data", headers={"X-Auth-Token": self.token}).json()
+		return User(resp["username"], self)

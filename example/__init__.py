@@ -22,3 +22,7 @@ def start():
 	print(f"{count} notifs")
 	notif = next(notifs)
 	print(notif.message)
+
+	print("===== PULLING LISTS =====")
+	user = session.get_self()
+	print(next(user.get_lists()))

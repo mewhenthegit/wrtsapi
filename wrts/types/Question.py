@@ -17,7 +17,7 @@ class Answer:
 		self.is_own_answer = obj["is_own_answer"]
 		self.attachments = obj["qna_attachments"]
 		self.upvoted_by_self = obj["is_upvoted"]
-		self.user = User(obj["user"]["username"])
+		self.user = User(obj["user"]["username"], self.session)
 	def vote(self):
 		result = requests.post(f"https://api.wrts.nl/api/v3/qna/answers/{self.id}/votes", headers={"x-auth-token": self.session.token}).text
 		if self.upvoted_by_self:
@@ -47,7 +47,7 @@ class Question:
 		self.moderated = obj["requires_forced_moderation"] # this is public?
 		self.title = obj["title"]
 		#self.subject = Subject(obj["subject"],token)
-		self.user = User(obj["user"]["username"],session)
+		self.user = User(obj["user"]["username"],self.session)
 
 		subjects = requests.get("https://api.wrts.nl/api/v3/subjects",headers={"x-auth-token": self.session.token}).json()["subjects"]
 		for sub in subjects:

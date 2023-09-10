@@ -1,3 +1,4 @@
+#from wrts.types.List import List
 import requests, re
 
 class UserError(Exception):
@@ -22,3 +23,10 @@ class User:
 		self.profile_image_path = obj["profile_image_path"] # BRO, WHY, profile_image.image_url EXISTS!!!
 		self.rank = Rank(obj["qna_rank_and_points_display"], obj["qna_rank_logo"])
 		self.tutor = obj["tutor"] # <-- aka self.gay = obj["gay"]
+		self.session = session
+
+	def get_lists(self):
+		List = __import__("wrts.types.List").List
+		resp = requests.get(f"https://api.wrts.nl/api/v3/public/users/{self.path}/practiceable_items", headers={"X-Auth-Token": self.session.token}).json()
+		return (List(o,self.session) for o in resp)
+
