@@ -28,8 +28,8 @@ class List:
 		self.wordcount = resp["word_count"] # ??
 		self.upgrade_info = resp["upgrade_info"] # maybe parse?
 		self.related_topics_type = resp["related_topics_type"]
-		self.subjects = (Subject(o,session) for o in resp["subjects"])
-		#self.subject = Subject(resp["subject"],session)
+		self.subjects = (session.get_subject(o["id"]) for o in resp["subjects"])
+		self.subject = session.get_subject(resp["subject"]["id"])
 		self.is_own = resp["is_own_list"] # why can't they just infer this from the creator
 		self.is_from_publisher = resp["is_from_publisher"] # for book prob
 		self.prioritylang = resp["prioritized_language"] #parse

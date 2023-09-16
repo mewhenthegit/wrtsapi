@@ -1,10 +1,16 @@
+from pathlib import Path
 import wrts, json
 
-with open("creds.json") as f:
+DIR = Path(__file__).parents[0]
+CREDS = DIR / "creds.json"
+TOKEN = DIR / ".TOKEN"
+
+
+with open(CREDS) as f:
 	creds = json.loads(f.read())
 
 def start():
-	session = wrts.login(creds["email"], creds["password"], ".TOKEN")
+	session = wrts.login(creds["email"], creds["password"], TOKEN)
 
 	print("===== PULLING QUESTIONS =====")
 	qcount, questions = session.get_questions()
