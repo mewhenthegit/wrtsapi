@@ -16,6 +16,7 @@ def start():
 	qcount, questions = session.get_questions()
 	q = next(questions)
 	print(q.title, q.body)
+	print(type(q.subject.locale))
 
 	print("===== PULLING RELATED QUESTIONS =====")
 	label, qcount, questions = q.get_related_questions()

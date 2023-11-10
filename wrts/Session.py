@@ -2,7 +2,7 @@ from .types.Question import Question
 from .types.Subject import Subject
 from .types.Notif import Notif
 from .types.User import User
-from .types.List import List # too much troll
+from .types.List import List # too much troll, (me a couple months later) what the actual fuck did i mean with this
 from pathlib import Path
 import requests, json, platform
 

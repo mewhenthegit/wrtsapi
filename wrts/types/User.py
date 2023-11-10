@@ -28,5 +28,5 @@ class User:
 	def get_lists(self):
 		List = __import__("wrts.types.List").List
 		resp = requests.get(f"https://api.wrts.nl/api/v3/public/users/{self.path}/practiceable_items", headers={"X-Auth-Token": self.session.token}).json()
-		return (List(o,self.session) for o in resp)
+		return (List(o["id"],self.session) for o in resp)
 
