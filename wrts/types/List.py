@@ -25,5 +25,9 @@ class List:
         self.word_count = obj["word_count"]
         self.upgrade_info = obj["upgrade_info"]
         self.related_type = obj["related_topics_type"]
+        self.chapter = obj["chapter"] # transform/parse/whatevver
         self.subjects = (Subject(obj) for obj in obj["subjects"])
+        self.prioritylang = obj["prioritized_language"]
+        self.locales = obj["locales"]
+        
 
