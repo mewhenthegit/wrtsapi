@@ -1,2 +1,8 @@
+# Account info
 example/creds.json
 example/.TOKEN
+
+# Py stuff
+dist
+__pycache__
+*.pyc

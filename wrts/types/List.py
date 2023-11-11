@@ -3,6 +3,7 @@ from wrts.types.Subject import Subject
 import requests
 
 
+
 class List:
     def __init__(self, id, session):
         obj = requests.get(f"https://api.wrts.nl/api/v3/public/lists/{id}").json()
@@ -29,5 +30,5 @@ class List:
         self.subjects = (Subject(obj) for obj in obj["subjects"])
         self.prioritylang = obj["prioritized_language"]
         self.locales = obj["locales"]
-        
+
 

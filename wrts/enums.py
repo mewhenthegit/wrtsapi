@@ -27,3 +27,7 @@ class BATTLE_EXERCISE_TYPES:
 	MULTIPLECHOICE = 'multiple_choice'
 	SPELLING = 'timed'
 
+def enumify(enum, val):
+	for attr in [attr for attr in getattr(enum) if not attr.startswith("__")]:
+		if object.__getattribute__(enum, attr) == val:
+			return attr
