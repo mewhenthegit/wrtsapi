@@ -3,6 +3,25 @@ from wrts.types.Subject import Subject
 from datetime import datetime
 import requests
 
+class PracticeSession:
+    def __init__(self, obj, session):
+        self.session = session
+
+        self.id = obj["id"]
+        self.word = [(o["words"][0], o["words"][1]) for o in obj["words_collection"]]
+        self.special_chars = obj["special_characters"]
+        self.extype = obj["exercise_type_code"]
+        self.answer_url = obj["answer_url"]
+        self.onboarding = obj["show_onboarding"]
+        self.all_config = obj["all_configuration"]
+        self.legit_config = obj["legit_configuration_values"] # ???
+        self.simplified_attemps = obj["simplified_attempts"] #??????/
+        self.word_queue = obj["word_queue"]
+        self.logic_params = obj["logic_parameters"] # ???????????????????????????
+        self.typochecker = obj["allow_typochecker"]
+        self.langs = obj["list_languages"]
+        self.config = obj["config"]
+
 class Result:
     def __init__(self, obj):
         self.id = obj["id"]
@@ -15,9 +34,8 @@ class Result:
         self.accuracy = obj["correctness_percentage"]
         self.practiced_percentage = obj["practiced_words_percentage"]
         self.practiced = obj["words_practiced"]
-        self.listlength = obj["words_in_lists"]
+        self.list_length = obj["words_in_lists"]
         self.first_attempts = (obj["first_attempts_correctness"]["correct"], obj["first_attempts_correctness"]["incorrect"])
-
 
 class List:
     def __init__(self, id, session):
@@ -49,3 +67,13 @@ class List:
     def get_results(self):
         resp = requests.get(f"https://api.wrts.nl/api/v3/results?list_id={self.id}", headers={"x-auth-token": self.session.token}).json()["results"]
         return (Result(res) for res in resp)
+
+    def practice(self, extype, id=None, selected_words=[]):
+        req = {
+            "exercise_type_code": extype,
+            "id": id,
+            "list_ids": [self.id],
+            "selected_words": selected_words
+        }
+
+        resp = requests.post("https://api.wrts.nl/api/v3/exercise", headers={"x-auth-token": self.session.token}, json=req).json()
