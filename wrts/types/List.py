@@ -1,14 +1,16 @@
 from wrts.types.User import User
 from wrts.types.Subject import Subject
+from wrts.enums import ANSWER_TYPES
 from datetime import datetime
-import requests
+import requests, random
 
 class PracticeSession:
     def __init__(self, obj, session):
         self.session = session
 
         self.id = obj["id"]
-        self.word = [(o["words"][0], o["words"][1]) for o in obj["words_collection"]]
+        self.list_id = list(obj["list_languages"].keys())[0]
+        self.words = [{"id": o["id"], "value": o["data"]} for o in obj["words"]]
         self.special_chars = obj["special_characters"]
         self.extype = obj["exercise_type_code"]
         self.answer_url = obj["answer_url"]
@@ -19,8 +21,59 @@ class PracticeSession:
         self.word_queue = obj["word_queue"]
         self.logic_params = obj["logic_parameters"] # ???????????????????????????
         self.typochecker = obj["allow_typochecker"]
-        self.langs = obj["list_languages"]
+        self.langs = obj["list_languages"][0]
         self.config = obj["config"]
+
+        self.word_queue = []
+        self.progress = 0
+        self.finished = False
+        self.answer_locale = self.config[0]["settings"][0]["value"]
+        self.question_locale = ""
+
+        for i, lang in self.langs:
+            if not lang["locale"] == self.answer_locale:
+                self.question_locale = lang["locale"]
+
+        for word in self.words:
+            self.word_queue.append({
+                "answer_locale": self.answer_locale,
+                "correct": None,
+                "display_type": ANSWER_TYPES.FULL,
+                "list_id": self.list_id,
+                "question_locale": self.question_locale,
+                "round_nr": 1,
+                "word_id": word["id"]
+            })
+
+        if self.config[0]["settings"][1]["value"]:
+            random.shuffle(self.word_queue)
+
+    def answer(self, answer):
+        if self.progress == len(self.word_queue)-1:
+            self.finished = True
+
+        req = {
+            "answer_locale": self.answer_locale,
+            "correct_answer": self.words[self.progress]["value"][answer_locale],
+            "display_type": self.word_queue[self.progress]["answer_type"],
+            "is_answer_correct": self.words[self.progress]["value"][answer_locale] == answer,
+            "is_exercise_finished": self.finished,
+            "marked_as_correct_answer": None,
+            "provided_answer": answer,
+            "question_locale": self.question_locale,
+            "round_nr": 1, # handle this correctly next time
+            "typochecker_accepted": None,
+            "typochecker_shown": False, # These aswel
+            "word_id": self.word_queue[self.progress]["id"],
+            "word_queue": self.word_queue
+        }
+
+        self.progress += 1
+
+        resp = requests.post(self.answer_url, headers={"x-auth-token": self.session.token}, json=req).json()
+        return resp["success"]
+        
+        
 
 class Result:
     def __init__(self, obj):

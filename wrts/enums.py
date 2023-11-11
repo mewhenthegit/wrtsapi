@@ -26,3 +26,6 @@ class BATTLE_EXERCISE_TYPES:
 	HINTS = 'hints'
 	MULTIPLECHOICE = 'multiple_choice'
 	SPELLING = 'timed'
+
+class ANSWER_TYPES:
+	FULL = 'full_word'
