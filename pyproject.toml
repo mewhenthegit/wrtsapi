@@ -2,7 +2,7 @@
 name = "wrts"
 version = "0.6.0"
 description = "A small lil library for using the WRTS API "
-authors = ["BadPythonCoder <no@no.no>"]
+authors = ["BadPythonCoder <xsare435@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
