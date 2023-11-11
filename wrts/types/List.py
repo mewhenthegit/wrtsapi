@@ -1,7 +1,23 @@
 from wrts.types.User import User
 from wrts.types.Subject import Subject
+from wrts.enums import EXERCISE_TYPES, enumify
+from datetime import datetime
 import requests
 
+class Result:
+    def __init__(self, obj):
+        self.id = obj["id"]
+        self.grade = obj["grade"]
+        self.started = datetime.strptime(obj["started_at"], "%Y-%m-%dT%H:%M:%S.000Z")
+        self.finished = datetime.strptime(obj["finished_at"], "%Y-%m-%dT%H:%M:%S.000Z")
+        self.exercise_type = obj["exercise_type_code"]
+        self.errors = obj["wrong_answers_count"]
+        self.corrects = obj["correct_answers_count"]
+        self.accuracy = obj["correctness_percentage"]
+        self.practiced_percentage = obj["practiced_words_percentage"]
+        self.practiced = obj["words_practiced"]
+        self.listlength = obj["words_in_list"]
+        self.first_attempts = (obj["first_attempts_correctness"]["correct"], obj["first_attempts_correctness"]["incorrect"])
 
 
 class List:
@@ -31,4 +47,6 @@ class List:
         self.prioritylang = obj["prioritized_language"]
         self.locales = obj["locales"]
 
-
+    def get_results(self):
+        resp = requests.get(f"https://api.wrts.nl/api/v3/results?list_id={self.id}", headers={"x-auth-token": self.session.token}).json()["results"]
+        return (Result(res) for res in resp)
