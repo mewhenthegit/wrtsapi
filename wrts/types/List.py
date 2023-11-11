@@ -1,6 +1,5 @@
 from wrts.types.User import User
 from wrts.types.Subject import Subject
-from wrts.enums import EXERCISE_TYPES, enumify
 from datetime import datetime
 import requests
 
@@ -16,7 +15,7 @@ class Result:
         self.accuracy = obj["correctness_percentage"]
         self.practiced_percentage = obj["practiced_words_percentage"]
         self.practiced = obj["words_practiced"]
-        self.listlength = obj["words_in_list"]
+        self.listlength = obj["words_in_lists"]
         self.first_attempts = (obj["first_attempts_correctness"]["correct"], obj["first_attempts_correctness"]["incorrect"])
 
 

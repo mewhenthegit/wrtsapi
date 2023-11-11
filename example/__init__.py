@@ -32,4 +32,6 @@ def start():
 
 	print("===== PULLING LISTS =====")
 	user = session.get_self()
-	print(next(user.get_lists()))
+	l = next(user.get_lists())
+	print(l.title)
+	print(next(l.get_results()))
