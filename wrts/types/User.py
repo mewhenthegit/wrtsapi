@@ -1,4 +1,4 @@
-#from wrts.types.List import List
+from typing import Generator
 import requests, re
 
 class UserError(Exception):
@@ -25,7 +25,7 @@ class User:
 		self.tutor = obj["tutor"] # <-- aka self.gay = obj["gay"]
 		self.session = session
 
-	def get_lists(self):
+	def get_lists(self) -> Generator[List, None, None]:
 		List = __import__("wrts.types.List").List
 		resp = requests.get(f"https://api.wrts.nl/api/v3/public/users/{self.path}/practiceable_items", headers={"X-Auth-Token": self.session.token}).json()
 		return (List(o["id"],self.session) for o in resp)

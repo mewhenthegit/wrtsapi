@@ -1,6 +1,7 @@
 from wrts.types.User import User
 from wrts.types.Subject import Subject
 from wrts.enums import ANSWER_TYPES
+from typing import Generator
 from datetime import datetime
 import requests, random
 
@@ -48,10 +49,10 @@ class PracticeSession:
                 "word_id": word["id"]
             })
 
-    def get_question(self):
+    def get_question(self) -> str:
         return self.words[self.progress]["value"][self.question_locale]
 
-    def answer(self, answer):
+    def answer(self, answer) -> bool:
         if self.progress == len(self.word_queue)-1:
             self.finished = True
 
@@ -120,7 +121,7 @@ class List:
         self.prioritylang = obj["prioritized_language"]
         self.locales = obj["locales"]
 
-    def get_results(self):
+    def get_results(self) -> Generator[Result, None, None]:
         resp = requests.get(f"https://api.wrts.nl/api/v3/results?list_id={self.id}", headers={"x-auth-token": self.session.token}).json()["results"]
         return (Result(res) for res in resp)
 

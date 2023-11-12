@@ -59,14 +59,16 @@ class Question:
 				if topic.id == obj["topic"]["id"]:
 					self.topic = topic
 					break
-	def answer(self, body, attachments=[]):
+			
+	def answer(self, body, attachments=[]) -> Answer:
 		resp = requests.post(f"https://api.wrts.nl/api/v3/qna/questions/{self.id}/answers", json={"qna_answer":{"body": body, "qna_attachments_attributes": attachments}}, headers={"X-Auth-Token": self.session.token}).json()
 		return Answer(resp["qna_answer"]["id"], self.session)
-	def get_related_questions(self):
+
+	def get_related_questions(self) -> (str, int, Generator[Question, None, None]):
 		resp = requests.get(f"https://api.wrts.nl/api/v3/public/qna/questions/{self.id}/related_questions", headers={"x-auth-token":self.session.token}).json()
 		return resp["label"], resp["total_count"], (Question(o["id"],self.session) for o in resp["qna_questions"])
 
-	def report(self, reason):
+	def report(self, reason) -> dict:
 		resp = requests.post("https://api.wrts.nl/api/v3/qna/flagged_questions", headers={"x-auth-token"}, json={"qna_question_id": self.id, "qna_question_flagging_reason": reason}).json
 		return resp
 
