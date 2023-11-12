@@ -35,3 +35,11 @@ def start():
 	l = next(user.get_lists())
 	print(l.title)
 	print(next(l.get_results()))
+
+	learn = l.practice(wrts.enums.EXERCISE_TYPES.TEST)
+	
+	while not learn.finished:
+		print(f"Question: {learn.words[learn.progress]}")
+		answer = input("Answer: ")
+		success = learn.answer(answer)
+		print(success)

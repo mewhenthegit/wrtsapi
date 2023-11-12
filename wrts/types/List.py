@@ -21,8 +21,8 @@ class PracticeSession:
         self.word_queue = obj["word_queue"]
         self.logic_params = obj["logic_parameters"] # ???????????????????????????
         self.typochecker = obj["allow_typochecker"]
-        self.langs = obj["list_languages"][0]
-        self.config = obj["config"]
+        self.langs = obj["list_languages"][self.list_id]
+        self.config = obj["configuration"]
 
         self.word_queue = []
         self.progress = 0
@@ -30,9 +30,12 @@ class PracticeSession:
         self.answer_locale = self.config[0]["settings"][0]["value"]
         self.question_locale = ""
 
-        for i, lang in self.langs:
+        for i, lang in enumerate(self.langs):
             if not lang["locale"] == self.answer_locale:
                 self.question_locale = lang["locale"]
+
+        if self.config[0]["settings"][1]["value"]:
+            random.shuffle(self.words)
 
         for word in self.words:
             self.word_queue.append({
@@ -45,18 +48,15 @@ class PracticeSession:
                 "word_id": word["id"]
             })
 
-        if self.config[0]["settings"][1]["value"]:
-            random.shuffle(self.word_queue)
-
     def answer(self, answer):
         if self.progress == len(self.word_queue)-1:
             self.finished = True
 
         req = {
             "answer_locale": self.answer_locale,
-            "correct_answer": self.words[self.progress]["value"][answer_locale],
-            "display_type": self.word_queue[self.progress]["answer_type"],
-            "is_answer_correct": self.words[self.progress]["value"][answer_locale] == answer,
+            "correct_answer": self.words[self.progress]["value"][self.answer_locale],
+            "display_type": self.word_queue[self.progress]["display_type"],
+            "is_answer_correct": self.words[self.progress]["value"][self.answer_locale] == answer,
             "is_exercise_finished": self.finished,
             "marked_as_correct_answer": None,
             "provided_answer": answer,
@@ -64,7 +64,7 @@ class PracticeSession:
             "round_nr": 1, # handle this correctly next time
             "typochecker_accepted": None,
             "typochecker_shown": False, # These aswel
-            "word_id": self.word_queue[self.progress]["id"],
+            "word_id": self.word_queue[self.progress]["word_id"],
             "word_queue": self.word_queue
         }
 
@@ -129,4 +129,5 @@ class List:
             "selected_words": selected_words
         }
 
-        resp = requests.post("https://api.wrts.nl/api/v3/exercise", headers={"x-auth-token": self.session.token}, json=req).json()
+        resp = requests.post("https://api.wrts.nl/api/v3/exercises", headers={"x-auth-token": self.session.token}, json=req).json()
+        return PracticeSession(resp, self.session)
