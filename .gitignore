@@ -3,6 +3,7 @@ example/creds.json
 example/.TOKEN
 
 # Py stuff
-dist
-*/__pycache__
-*.pyc
+dist/*
+example/__pycache__/*
+wrts/__pycache__/*
+wrts/types/__pycache__/*
