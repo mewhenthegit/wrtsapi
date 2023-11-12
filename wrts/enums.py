@@ -29,3 +29,5 @@ class BATTLE_EXERCISE_TYPES:
 
 class ANSWER_TYPES:
 	FULL = 'full_word'
+	LEARN = 'learn'
+	

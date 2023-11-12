@@ -1,6 +1,6 @@
 from wrts.types.User import User
 from wrts.types.Subject import Subject
-from wrts.enums import ANSWER_TYPES
+from wrts.enums import ANSWER_TYPES, EXERCISE_TYPES
 from datetime import datetime
 import requests, random
 
@@ -10,7 +10,7 @@ class PracticeSession:
 
         self.id = obj["id"]
         self.list_id = list(obj["list_languages"].keys())[0]
-        self.words = [{"id": o["id"], "value": o["data"]} for o in obj["words"]]
+        self.words = {o["id"]: o["data"] for o in obj["words"]}
         self.special_chars = obj["special_characters"]
         self.extype = obj["exercise_type_code"]
         self.answer_url = obj["answer_url"]
@@ -37,29 +37,39 @@ class PracticeSession:
         if self.config[0]["settings"][1]["value"]:
             random.shuffle(self.words)
 
-        for word in self.words:
-            self.word_queue.append({
-                "answer_locale": self.answer_locale,
-                "correct": None,
-                "display_type": ANSWER_TYPES.FULL,
-                "list_id": self.list_id,
-                "question_locale": self.question_locale,
-                "round_nr": 1,
-                "word_id": word["id"]
-            })
+        if self.extype == EXERCISE_TYPES.TEST:
+            self.generate_test_queue()
+
+    def push_to_queue(self, display_type: str, word_id: str, roundnr=1):
+        self.word_queue.append({
+            "answer_locale": self.answer_locale,
+            "correct": None,
+            "display_type": display_type,
+            "list_id": self.list_id,
+            "question_locale": self.question_locale,
+            "round_nr": roundnr,
+            "word_id": word_id
+        })
+
+    def generate_test_queue(self):
+        for wordid in self.words:
+            self.push_to_queue(ANSWER_TYPES.FULL, wordid)
 
     def get_question(self):
-        return self.words[self.progress]["value"][self.question_locale]
+        wid = self.word_queue[self.progress]["word_id"]
+        return self.words[wid][self.question_locale], self.word_queue[self.progress]["display_type"]
 
     def answer(self, answer):
         if self.progress == len(self.word_queue)-1:
             self.finished = True
 
+        wid = self.word_queue[self.progress]["word_id"]
+
         req = {
             "answer_locale": self.answer_locale,
-            "correct_answer": self.words[self.progress]["value"][self.answer_locale],
+            "correct_answer": self.words[wid][self.answer_locale],
             "display_type": self.word_queue[self.progress]["display_type"],
-            "is_answer_correct": self.words[self.progress]["value"][self.answer_locale] == answer,
+            "is_answer_correct": self.words[wid][self.answer_locale] == answer,
             "is_exercise_finished": self.finished,
             "marked_as_correct_answer": None,
             "provided_answer": answer,
@@ -67,7 +77,7 @@ class PracticeSession:
             "round_nr": 1, # handle this correctly next time
             "typochecker_accepted": None,
             "typochecker_shown": False, # These aswel
-            "word_id": self.word_queue[self.progress]["word_id"],
+            "word_id": wid,
             "word_queue": self.word_queue
         }
 
