@@ -39,7 +39,7 @@ def start():
 	learn = l.practice(wrts.enums.EXERCISE_TYPES.TEST)
 	
 	while not learn.finished:
-		print(f"Question: {learn.words[learn.progress]}")
+		print(f"Question: {learn.get_question()}")
 		answer = input("Answer: ")
 		success = learn.answer(answer)
 		print(success)

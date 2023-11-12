@@ -48,6 +48,9 @@ class PracticeSession:
                 "word_id": word["id"]
             })
 
+    def get_question(self):
+        return self.words[self.progress]["value"][self.question_locale]
+
     def answer(self, answer):
         if self.progress == len(self.word_queue)-1:
             self.finished = True
