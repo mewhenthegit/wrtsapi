@@ -7,11 +7,11 @@ class FLAGGING_TYPES:
 
 class PERFORMANCE_ORDER:
 	WRONG = 0
-	MOSTLYWRONG = 1
-	SOMETIMESWRONG = 2
-	MOSTLYRIGHT = 3
+	MOSTLY_WRONG = 1
+	SOMETIMES_WRONG = 2
+	MOSTLY_RIGHT = 3
 	GOOD = 4
-	NOTPRACTICED = 5
+	NOT_PRACTICED = 5
 
 class EXERCISE_TYPES:
 	LEARN = 'learn'
@@ -19,15 +19,16 @@ class EXERCISE_TYPES:
 	TEST = 'full_word'
 	HINTS = 'hints'
 	MENTAL = 'in_your_mind'
-	MULTIPLECHOICE = 'multiple_choice'
+	MULTIPLE_CHOICE = 'multiple_choice'
 
 class BATTLE_EXERCISE_TYPES:
 	TEST = 'full_word'
 	HINTS = 'hints'
-	MULTIPLECHOICE = 'multiple_choice'
+	MULTIPLE_CHOICE = 'multiple_choice'
 	SPELLING = 'timed'
 
 class ANSWER_TYPES:
 	FULL = 'full_word'
 	LEARN = 'learn'
-	
+	MULTIPLE_CHOICE = 'multiple_choice'
+	HINTED = 'hints'

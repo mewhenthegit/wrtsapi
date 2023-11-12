@@ -37,10 +37,14 @@ class PracticeSession:
         if self.config[0]["settings"][1]["value"]:
             random.shuffle(self.words)
 
-        if self.extype == EXERCISE_TYPES.TEST:
-            self.generate_test_queue()
+        match self.extype:
+            case EXERCISE_TYPES.LEARN:
+                self.generate_learn_queue()
+            case EXERCISE_TYPES.TEST:
+                self.generate_test_queue()
 
     def push_to_queue(self, display_type: str, word_id: str, roundnr=1):
+        if word_id=="": return # dumb hack for generate_learn_queue
         self.word_queue.append({
             "answer_locale": self.answer_locale,
             "correct": None,
@@ -55,9 +59,49 @@ class PracticeSession:
         for wordid in self.words:
             self.push_to_queue(ANSWER_TYPES.FULL, wordid)
 
+    def generate_learn_queue(self):
+        words_keys = list(self.words.keys())
+        words_list = [(words_keys[i], words_keys[i+1]) for i in range(len(words_keys)//2)]
+        if not len(words_keys)//2*2 == len(words_keys): words_list.append((words_keys[-1],""))
+
+        for pair in words_list:
+            self.push_to_queue(ANSWER_TYPES.LEARN, pair[0])
+            self.push_to_queue(ANSWER_TYPES.LEARN, pair[1])
+
+            self.push_to_queue(ANSWER_TYPES.MULTIPLE_CHOICE, pair[0])
+            self.push_to_queue(ANSWER_TYPES.MULTIPLE_CHOICE, pair[1])
+            
+            self.push_to_queue(ANSWER_TYPES.HINTED, pair[0])
+            self.push_to_queue(ANSWER_TYPES.HINTED, pair[1])
+            
+            self.push_to_queue(ANSWER_TYPES.FULL, pair[0])
+            self.push_to_queue(ANSWER_TYPES.FULL, pair[1])
+
+
+
     def get_question(self):
         wid = self.word_queue[self.progress]["word_id"]
-        return self.words[wid][self.question_locale], self.word_queue[self.progress]["display_type"]
+        
+        retval = None
+        match self.word_queue[self.progress]["display_type"]:
+            case ANSWER_TYPES.LEARN:
+                retval = (self.words[wid][self.question_locale], self.words[wid][self.answer_locale])
+
+            case ANSWER_TYPES.MULTIPLE_CHOICE:
+                options = [self.words[wid][self.answer_locale]]
+                while len(options) < 4:
+                    candidate = self.words[random.choice(list(self.words.keys()))][self.answer_locale]
+                    if not candidate == self.words[wid][self.answer_locale]:
+                        options.append(candidate)
+                
+                retval = (self.words[wid][self.question_locale], options)
+            case ANSWER_TYPES.HINTED:
+                retval = (self.words[wid][self.question_locale], self.words[wid][self.answer_locale][0])
+
+            case ANSWER_TYPES.FULL:
+                retval = self.words[wid][self.question_locale]
+
+        return retval, self.word_queue[self.progress]["display_type"]
 
     def answer(self, answer):
         if self.progress == len(self.word_queue)-1:
@@ -65,26 +109,45 @@ class PracticeSession:
 
         wid = self.word_queue[self.progress]["word_id"]
 
+        if self.words[wid][self.answer_locale] == answer:
+            self.word_queue[self.progress]["correct"] = True
+        else:
+            self.word_queue[self.progress]["correct"] = False
+
+        if self.extype == EXERCISE_TYPES.LEARN and not self.word_queue[self.progress]["display_type"] == ANSWER_TYPES.LEARN and not self.word_queue[self.progress]["correct"]:
+            display_type = self.word_queue[self.progress]["display_type"]
+            roundnr = self.word_queue[self.progress]["round_nr"]
+            self.push_to_queue(display_type, wid, roundnr)
+            self.finished = False
+
         req = {
             "answer_locale": self.answer_locale,
             "correct_answer": self.words[wid][self.answer_locale],
             "display_type": self.word_queue[self.progress]["display_type"],
-            "is_answer_correct": self.words[wid][self.answer_locale] == answer,
+            "is_answer_correct": self.word_queue[self.progress]["correct"],
             "is_exercise_finished": self.finished,
             "marked_as_correct_answer": None,
             "provided_answer": answer,
             "question_locale": self.question_locale,
             "round_nr": 1, # handle this correctly next time
             "typochecker_accepted": None,
-            "typochecker_shown": False, # These aswel
+            "typochecker_shown": False, # These aswell
             "word_id": wid,
             "word_queue": self.word_queue
         }
 
+        if req["display_type"] == ANSWER_TYPES.LEARN:
+            del req["correct_answer"]
+            req["is_answer_correct"] = True
+            self.word_queue[self.progress]["correct"] = True
+            req["word_queue"] = self.word_queue
+
+            
+
         self.progress += 1
 
         resp = requests.post(self.answer_url, headers={"x-auth-token": self.session.token}, json=req).json()
-        return resp["success"]
+        return req["is_answer_correct"], resp["success"]
         
         
 

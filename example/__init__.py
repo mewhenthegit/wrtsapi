@@ -36,7 +36,7 @@ def start():
 	print(l.title)
 	print(next(l.get_results()))
 
-	learn = l.practice(wrts.enums.EXERCISE_TYPES.TEST)
+	learn = l.practice(wrts.enums.EXERCISE_TYPES.LEARN)
 	
 	while not learn.finished:
 		print(f"Question: {learn.get_question()}")
