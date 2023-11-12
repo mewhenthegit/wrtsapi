@@ -4,5 +4,5 @@ example/.TOKEN
 
 # Py stuff
 dist
-__pycache__
+*/__pycache__
 *.pyc
