@@ -1,17 +1,16 @@
 [tool.poetry]
 name = "wrts"
-version = "0.5.1"
+version = "0.6.0"
 description = "A small lil library for using the WRTS API "
-authors = ["BadPythonCoder <no@no.no>"]
+authors = ["BadPythonCoder <xsare435@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10" # The lie becomes a little less extreme......
 requests = "^2.31.0"
 
 [tool.poetry.scripts]
-test = "examples:start"
-
+test = "example:start"
 
 [build-system]
 requires = ["poetry-core"]

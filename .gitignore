@@ -1,2 +1,9 @@
-examples/creds.json
-examples/.TOKEN
+# Account info
+example/creds.json
+example/.TOKEN
+
+# Py stuff
+dist/*
+example/__pycache__/*
+wrts/__pycache__/*
+wrts/types/__pycache__/*
