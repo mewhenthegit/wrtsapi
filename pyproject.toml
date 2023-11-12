@@ -6,7 +6,7 @@ authors = ["BadPythonCoder <xsare435@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10" # The lie becomes a little less extreme......
 requests = "^2.31.0"
 
 [tool.poetry.scripts]
