@@ -32,8 +32,6 @@ jobs:
         python -m poetry build
         ls
         ls dist # no way it didnt save
-        chmod +x ./github/workflow_tools/latest_only.sh # bad idea but it is my only idea
-        ./github/workflow_tools/latest_only
 
     - name: Publish distribution
       uses: pypa/gh-action-pypi-publish@release/v1
