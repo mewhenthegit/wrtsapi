@@ -12,10 +12,6 @@ jobs:
     #   fail-fast: false
     #   matrix:
     #     python-version: ["3.9", "3.10", "3.11"]
-
-    env:
-      USERNAME: ${{ secrets.PYPIUSERNAME }} # bad idea, but oh well
-      PASSWORD: ${{ secrets.PYPIPASSWD }}
   
     steps:
     - uses: actions/checkout@v3
@@ -28,8 +24,22 @@ jobs:
         python -m pip install poetry
         python -m poetry install
         python -m poetry build
-    - name: Test if all worked
-      run: |
-        python -m poetry publish --username=$USERNAME --password=$PASSWORD
-        echo "done!"
-        
+
+  publish:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/wrts
+    permissions:
+      id-token: write
+    steps:
+      - name: Download dists
+        uses: actions/download-artifact@v3
+        with:
+          name: python-package-distributions
+          path: dist/
+      
+      - name: Publish distribution
+        uses: pypa/gh-action-pypi-publish@release
