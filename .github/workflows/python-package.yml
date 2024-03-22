@@ -31,7 +31,7 @@ jobs:
         python -m poetry install
         python -m poetry build
         ls
-        ls /dist # no way it didnt save
+        ls dist # no way it didnt save
 
     - name: Publish distribution
       uses: pypa/gh-action-pypi-publish@release/v1
