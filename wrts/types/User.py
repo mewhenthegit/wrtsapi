@@ -32,7 +32,7 @@ class User:
 		self.session = session
 
 	def get_lists(self):
-		List = __import__("wrts.types.List").List
+		List = __import__("wrts.types.List").List # I know, it's a very bad hack however if it works, it works
 		resp = requests.get(f"https://api.wrts.nl/api/v3/public/users/{self.path}/practiceable_items", headers={"X-Auth-Token": self.session.token}).json()
 		return (List(o["id"],self.session) for o in resp)
 
