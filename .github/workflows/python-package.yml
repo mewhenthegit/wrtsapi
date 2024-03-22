@@ -42,4 +42,4 @@ jobs:
           path: dist/
       
       - name: Publish distribution
-        uses: pypa/gh-action-pypi-publish@release
+        uses: pypa/gh-action-pypi-publish@release/v1
