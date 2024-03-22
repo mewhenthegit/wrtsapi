@@ -35,11 +35,11 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - name: Download dists
-        uses: actions/download-artifact@v3
-        with:
-          name: python-package-distributions
-          path: dist/
+      # - name: Download dists
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: python-package-distributions
+      #     path: dist/
       
       - name: Publish distribution
         uses: pypa/gh-action-pypi-publish@release/v1
