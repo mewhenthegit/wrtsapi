@@ -8,6 +8,14 @@ class Rank:
 		self.points = int(text.split(" ")[-2][1:])
 		self.logo = logo
 
+class ProfileImage:
+	def __init__(self, obj):
+		self.url = obj["image_url"]
+		self.default_color = obj["profile_color"]
+		self.default_letter = obj["profile_letter"]
+
+		self.default_pfp = self.url == None # If no URL is given, it must be a default profile picture
+
 class User:
 	def __init__(self, path, session):
 		resp = requests.get("https://api.wrts.nl/api/v3/public/users/"+path, headers={"x-auth-token": session.token}).json()
@@ -17,7 +25,7 @@ class User:
 		self.id = obj["id"]
 		self.path = path
 		self.is_self = obj["is_own_profile"] # why would anybody need this
-		self.profile_image = obj["profile_image"]
+		self.profile_image = ProfileImage(obj["profile_image"])
 		self.profile_image_path = obj["profile_image_path"] # BRO, WHY, profile_image.image_url EXISTS!!!
 		self.rank = Rank(obj["qna_rank_and_points_display"], obj["qna_rank_logo"])
 		self.tutor = obj["tutor"] # <-- aka self.gay = obj["gay"]
