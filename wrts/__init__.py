@@ -1,4 +1,5 @@
 from .Session import *
+from .exceptions import *
 import requests, json, os, time
 
 def get_token(email, password):
@@ -32,4 +33,6 @@ def login(email, password, path=".WRTS"):
 	except FileNotFoundError:
 		token = save_token(email, password, path)
 
+	if not token["success"]:
+		raise LoginFailure(token["info"])
 	return Session(token)
