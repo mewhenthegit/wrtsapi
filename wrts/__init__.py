@@ -25,10 +25,8 @@ def load_from_file(path):
 def login(email, password, path=".WRTS"):
 	try:
 		token = load_from_file(path)
-		if not token["success"]:
-			raise FileNotFoundError("duck!!!")
 		if time.time() > token["expires_at"]:
-			raise FileNotFoundError("Duck!!!!")
+			raise FileNotFoundError("Sussy")
 
 	except FileNotFoundError:
 		token = save_token(email, password, path)

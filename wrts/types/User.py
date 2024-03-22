@@ -1,8 +1,6 @@
 #from wrts.types.List import List
+from wrts.exceptions import UserError
 import requests, re
-
-class UserError(Exception):
-	pass
 
 class Rank:
 	def __init__(self, text, logo):

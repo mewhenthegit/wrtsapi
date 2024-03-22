@@ -1,8 +1,13 @@
+# TODO: Handle these exceptions properly
+
 class LoginFailure(Exception):
 	pass
 
-class QuestionFailure(Exception):
+class QuestionError(Exception):
 	pass
 
 class UploadError(Exception):
+	pass
+
+class UserError(Exception):
 	pass

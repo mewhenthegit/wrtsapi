@@ -1,4 +1,4 @@
-from .exceptions import *
+from .exceptions import LoginFailure, UploadError, QuestionError
 from .types.Question import Question
 from .types.Subject import Subject
 from .types.Notif import Notif
@@ -47,7 +47,7 @@ class Session:
 
 		resp = requests.post("https://api.wrts.nl/api/v3/qna/questions",headers={"x-auth-token": self.token},json=json.dumps({"qna_question":data})).json()
 		if "success" in resp:
-			raise QuestionFailure(resp["error"])
+			raise QuestionError(resp["error"])
 		return self.get_question(resp["qna_question"]["id"])
 
 	def get_self(self): # return user
