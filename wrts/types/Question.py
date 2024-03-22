@@ -1,9 +1,7 @@
+from wrts.exceptions import QuestionError
 from .Subject import *
 from .User import *
 import json, requests
-
-class QuestionNotFound(Exception):
-	pass
 
 class Answer:
 	def __init__(self, obj, session):
@@ -30,7 +28,7 @@ class Answer:
 class Question:
 	def __init__(self, id, session):
 		obj = requests.get(f"https://api.wrts.nl/api/v3/public/qna/questions/{id}", headers={"X-auth-token": session.token}).json()
-		if obj["qna_question"] == None: raise QuestionNotFound("The question has not been found!")
+		if obj["qna_question"] == None: raise QuestionError("Question not found")
 		obj = obj["qna_question"]
 		self.session = session
 		self.body = obj["body"]

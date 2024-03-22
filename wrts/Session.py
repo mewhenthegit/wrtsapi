@@ -1,3 +1,4 @@
+from .exceptions import LoginFailure, UploadError, QuestionError
 from .types.Question import Question
 from .types.Subject import Subject
 from .types.Notif import Notif
@@ -5,15 +6,6 @@ from .types.User import User
 from .types.List import List # too much troll, (me a couple months later) what the actual fuck did i mean with this
 from pathlib import Path
 import requests, json, platform
-
-class LoginFailure(Exception):
-	pass
-
-class QuestionFailure(Exception):
-	pass
-
-class UploadError(Exception):
-	pass
 
 class Session:
 	def __init__(self, token):
@@ -55,7 +47,7 @@ class Session:
 
 		resp = requests.post("https://api.wrts.nl/api/v3/qna/questions",headers={"x-auth-token": self.token},json=json.dumps({"qna_question":data})).json()
 		if "success" in resp:
-			raise QuestionFailure(resp["error"])
+			raise QuestionError(resp["error"])
 		return self.get_question(resp["qna_question"]["id"])
 
 	def get_self(self): # return user

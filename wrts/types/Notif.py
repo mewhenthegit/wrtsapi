@@ -20,5 +20,5 @@ class Notif:
 	def read(self):
 		resp = requests.patch(f"https://api.wrts.nl/api/v3/users/notifications/{self.id}",headers={"x-auth-token": self.session.token}).json()
 		if not resp["success"]:
-			raise NotifError(resp["error"]+" or something like that") # bro how does one even mess that up
+			raise NotifError(resp["error"]+"..... bro how did you mess up reading a notification") # bro how does one even mess that up
 		return true
