@@ -5,7 +5,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build_and_publish:
 
     runs-on: ubuntu-latest
     # strategy:
@@ -13,6 +13,12 @@ jobs:
     #   matrix:
     #     python-version: ["3.9", "3.10", "3.11"]
   
+    environment:
+      name: pypi
+      url: https://pypi.org/p/wrts
+
+    permissions:
+      id-token: write
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.11
@@ -27,21 +33,7 @@ jobs:
         ls
         ls /dist # no way it didnt save
 
-  publish:
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/p/wrts
-    permissions:
-      id-token: write
-    steps:
-      # - name: Download dists
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: python-package-distributions
-      #     path: dist/
+    - name: Publish distribution
+      uses: pypa/gh-action-pypi-publish@release/v1
       
-      - name: Publish distribution
-        uses: pypa/gh-action-pypi-publish@release/v1
+      
