@@ -1,5 +1,5 @@
 from wrts.types.User import User
-from wrts.types.Subject import Subject
+from wrts.types.Subject import Subject, Topic
 from wrts.enums import ANSWER_TYPES, EXERCISE_TYPES
 from datetime import datetime
 import requests, random
@@ -178,9 +178,9 @@ class List:
         self.times_practiced = obj["times_practiced"]
         self.shared = obj["shared"]
         self.deleted = obj["deleted"]
-        self.rated_words = obj["words_with_performance"] # properly transform this one
+        self.rated_words = obj["words_with_performance"] # properly parse this one
         self.book = obj["book"] # same goes for this one
-        self.related_topics = obj["related_topics"] # this too
+        self.related_topics = (Topic(top, None, None) for top in obj["related_topics"]) # this too
         self.paused_exercise = obj["paused_exercise"] # aswell
         self.status = obj["status"]
         self.upgrade_required = obj['needs_upgrade']
@@ -188,8 +188,8 @@ class List:
         self.word_count = obj["word_count"]
         self.upgrade_info = obj["upgrade_info"]
         self.related_type = obj["related_topics_type"]
-        self.chapter = obj["chapter"] # transform/parse/whatevver
-        self.subjects = (Subject(obj) for obj in obj["subjects"])
+        self.chapter = obj["chapter"] # parse
+        self.subjects = (Subject(sub) for sub in obj["subjects"])
         self.prioritylang = obj["prioritized_language"]
         self.locales = obj["locales"]
 

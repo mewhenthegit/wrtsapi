@@ -17,6 +17,7 @@ def start():
 	if qcount > 0:
 		q = next(questions)
 		print(q.title, q.body)
+		print(q.subject.locale)
 		print(type(q.subject.locale))
 	else:
 		print("No questions detected, should never happen so get inside your bunker")
@@ -44,6 +45,7 @@ def start():
 	try:
 		l = next(user.get_lists())
 		print(l.title)
+		print(l.related_topics)
 		print(next(l.get_results()))
 		learn = l.practice(wrts.enums.EXERCISE_TYPES.LEARN)
 		while not learn.finished:
