@@ -44,6 +44,7 @@ def start():
 	user = session.get_self()
 	try:
 		l = next(user.get_lists())
+		print("listering")
 		print(l.title)
 		print(l.related_topics)
 		print(next(l.get_results()))

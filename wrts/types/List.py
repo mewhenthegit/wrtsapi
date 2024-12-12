@@ -1,3 +1,4 @@
+from wrts.exceptions import NonPublicFunctionError
 from wrts.types.User import User
 from wrts.types.Subject import Subject, Topic
 from wrts.enums import ANSWER_TYPES, EXERCISE_TYPES
@@ -194,10 +195,14 @@ class List:
         self.locales = obj["locales"]
 
     def get_results(self):
+        if self.session.token == "":
+            raise NonPublicFunctionError("This function is not available for public use, an inlog is required!")
         resp = requests.get(f"https://api.wrts.nl/api/v3/results?list_id={self.id}", headers={"x-auth-token": self.session.token}).json()["results"]
         return (Result(res) for res in resp)
 
     def practice(self, extype, id=None, selected_words=[]):
+        if self.session.token == "":
+            raise NonPublicFunctionError("This function is not available for public use, an inlog is required!")
         req = {
             "exercise_type_code": extype,
             "id": id,

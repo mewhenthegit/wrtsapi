@@ -1,4 +1,4 @@
-from wrts.exceptions import QuestionError
+from wrts.exceptions import NonPublicFunctionError, QuestionError
 from .Subject import *
 from .User import *
 import json, requests
@@ -58,6 +58,9 @@ class Question:
 					self.topic = topic
 					break
 	def answer(self, body, attachments=[]):
+		if self.session.token == "":
+			raise NonPublicFunctionError("This function is not available for public use, an inlog is required!")
+		
 		resp = requests.post(f"https://api.wrts.nl/api/v3/qna/questions/{self.id}/answers", json={"qna_answer":{"body": body, "qna_attachments_attributes": attachments}}, headers={"X-Auth-Token": self.session.token}).json()
 		return Answer(resp["qna_answer"]["id"], self.session)
 	def get_related_questions(self):
@@ -65,6 +68,8 @@ class Question:
 		return resp["label"], resp["total_count"], (Question(o["id"],self.session) for o in resp["qna_questions"])
 
 	def report(self, reason):
+		if self.session.token == "":
+			raise NonPublicFunctionError("This function is not available for public use, an inlog is required!")
 		resp = requests.post("https://api.wrts.nl/api/v3/qna/flagged_questions", headers={"x-auth-token"}, json={"qna_question_id": self.id, "qna_question_flagging_reason": reason}).json
 		return resp
 

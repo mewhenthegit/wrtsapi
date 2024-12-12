@@ -1,4 +1,4 @@
-from .exceptions import LoginFailure, UploadError, QuestionError
+from .exceptions import LoginFailure, NonPublicFunctionError, UploadError, QuestionError
 from .types.Question import Question
 from .types.Subject import Subject
 from .types.Notif import Notif
@@ -58,4 +58,24 @@ class Session:
 		for subject in self.get_subjects():
 			if subject.id == id:
 				return subject
+			
+
+class PublicSession(Session):
+	def __init__(self):
+		super().__init__("")
+
+	def get_subjects(self):
+		raise NonPublicFunctionError("This function is not available for public use, an inlog is required!")
+	
+	def upload(self, path, mimetype="image/png"):
+		raise NonPublicFunctionError("This function is not available for public use, an inlog is required!")
+	
+	def get_notifs(self, page, per_page=10):
+		raise NonPublicFunctionError("This function is not available for public use, an inlog is required!")
+	
+	def get_self(self):
+		raise NonPublicFunctionError("This function is not available for public use, an inlog is required!")
+	
+	def post_question(self, contents, subject, topic=None, attachments=[]):
+		raise NonPublicFunctionError("This function is not available for public use, an inlog is required!")
 

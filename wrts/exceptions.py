@@ -11,3 +11,6 @@ class UploadError(Exception):
 
 class UserError(Exception):
 	pass
+
+class NonPublicFunctionError(Exception):
+	pass
