@@ -16,7 +16,7 @@ class Session:
 		return (Subject(x,self) for x in resp["subjects"])
 
 	def upload(self, path: Path, mimetype="image/png"):
-		while open(path, "rb"):
+		with open(path, "rb") as f:
 			data = f.read()
 
 		headers = {"X-Auth-Token": self.token}
