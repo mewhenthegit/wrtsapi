@@ -1,14 +1,14 @@
 import requests
 
 class Topic:
-	def __init__(self, obj, supercat, subcat):
+	def __init__(self, obj, supercat, subcat): # "supercategory" very creative names
 		self.supercat = supercat
 		self.subcat = subcat
 
 		self.combined_grade = obj["combined_grade"] # why not do this client side??
-		self.country = obj["country"] # i should probably make this into some class aswell
+		self.country = obj["country"] # i should probably parse
 		self.draft = obj["draft"] # what does this even mean
-		self.grade_nums = obj["grade_numbers"] # convert later on
+		self.grade_nums = obj["grade_numbers"] # parse later on
 		self.id = obj["id"]
 		self.relations = obj["learning_relations"] # i wonder what this means aswell
 		self.question_count = obj["questions_count"] # wait this is available information???
